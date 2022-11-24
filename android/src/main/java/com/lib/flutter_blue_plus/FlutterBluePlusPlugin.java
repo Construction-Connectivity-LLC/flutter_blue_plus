@@ -1441,6 +1441,13 @@ public class FlutterBluePlusPlugin implements
                     break;
                 }
 
+                case "openBluetoothSettings":
+                {
+                    activityBinding.getActivity().startActivity(new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS));
+                    result.success(null);
+                    break;
+                }
+
                 default:
                 {
                     result.notImplemented();
