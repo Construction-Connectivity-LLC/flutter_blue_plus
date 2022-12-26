@@ -230,6 +230,19 @@ public class FlutterBluePlusPlugin implements FlutterPlugin, MethodCallHandler, 
         break;
       }
 
+      case "openBluetoothSettings":
+      {
+        activityBinding.getActivity().startActivity(new Intent(android.provider.Settings.ACTION_BLUETOOTH_SETTINGS));
+        result.success(null);
+        break;
+      }
+
+      case "setUniqueId":
+      {
+        result.success(null);
+        break;
+      }
+
       case "name":
       {
         String name = mBluetoothAdapter.getName();
