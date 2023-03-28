@@ -326,11 +326,13 @@ typedef struct ProtosAdvertisementData__storage_ {
 @dynamic androidScanMode;
 @dynamic serviceUuidsArray, serviceUuidsArray_Count;
 @dynamic allowDuplicates;
+@dynamic macAddressesArray, macAddressesArray_Count;
 
 typedef struct ProtosScanSettings__storage_ {
   uint32_t _has_storage_[1];
   int32_t androidScanMode;
   NSMutableArray *serviceUuidsArray;
+  NSMutableArray *macAddressesArray;
 } ProtosScanSettings__storage_;
 
 // This method is threadsafe because it is initially called
@@ -365,6 +367,15 @@ typedef struct ProtosScanSettings__storage_ {
         .offset = 2,  // Stored in _has_storage_ to save space.
         .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
         .dataType = GPBDataTypeBool,
+      },
+      {
+        .name = "macAddressesArray",
+        .dataTypeSpecific.clazz = Nil,
+        .number = ProtosScanSettings_FieldNumber_MacAddressesArray,
+        .hasIndex = GPBNoHasBit,
+        .offset = (uint32_t)offsetof(ProtosScanSettings__storage_, macAddressesArray),
+        .flags = GPBFieldRepeated,
+        .dataType = GPBDataTypeString,
       },
     };
     GPBDescriptor *localDescriptor =
@@ -441,6 +452,51 @@ typedef struct ProtosScanResult__storage_ {
                                         fields:fields
                                     fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
                                    storageSize:sizeof(ProtosScanResult__storage_)
+                                         flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
+    #if defined(DEBUG) && DEBUG
+      NSAssert(descriptor == nil, @"Startup recursed!");
+    #endif  // DEBUG
+    descriptor = localDescriptor;
+  }
+  return descriptor;
+}
+
+@end
+
+#pragma mark - ProtosScanError
+
+@implementation ProtosScanError
+
+@dynamic code;
+
+typedef struct ProtosScanError__storage_ {
+  uint32_t _has_storage_[1];
+  int32_t code;
+} ProtosScanError__storage_;
+
+// This method is threadsafe because it is initially called
+// in +initialize for each subclass.
++ (GPBDescriptor *)descriptor {
+  static GPBDescriptor *descriptor = nil;
+  if (!descriptor) {
+    static GPBMessageFieldDescription fields[] = {
+      {
+        .name = "code",
+        .dataTypeSpecific.clazz = Nil,
+        .number = ProtosScanError_FieldNumber_Code,
+        .hasIndex = 0,
+        .offset = (uint32_t)offsetof(ProtosScanError__storage_, code),
+        .flags = (GPBFieldFlags)(GPBFieldOptional | GPBFieldClearHasIvarOnZero),
+        .dataType = GPBDataTypeInt32,
+      },
+    };
+    GPBDescriptor *localDescriptor =
+        [GPBDescriptor allocDescriptorForClass:[ProtosScanError class]
+                                     rootClass:[ProtosFlutterblueplusRoot class]
+                                          file:ProtosFlutterblueplusRoot_FileDescriptor()
+                                        fields:fields
+                                    fieldCount:(uint32_t)(sizeof(fields) / sizeof(GPBMessageFieldDescription))
+                                   storageSize:sizeof(ProtosScanError__storage_)
                                          flags:(GPBDescriptorInitializationFlags)(GPBDescriptorInitializationFlag_UsesClassRefs | GPBDescriptorInitializationFlag_Proto3OptionalKnown)];
     #if defined(DEBUG) && DEBUG
       NSAssert(descriptor == nil, @"Startup recursed!");

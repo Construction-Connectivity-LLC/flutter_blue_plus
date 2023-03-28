@@ -175,24 +175,30 @@ class FlutterBluePlus {
       rethrow;
     }
 
-    yield* FlutterBluePlus.instance._methodStream
-        .where((m) => m.method == "ScanResult")
-        .map((m) => m.arguments)
+    final stream = FlutterBluePlus.instance._methodStream
+        .where((m) => m.method == "ScanResult" || m.method == "ScanError")
         .takeUntil(Rx.merge(killStreams))
-        .doOnDone(stopScan)
-        .map((buffer) => protos.ScanResult.fromBuffer(buffer))
-        .map((p) {
-      final result = ScanResult.fromProto(p);
-      final list = _scanResults.value;
-      int index = list.indexOf(result);
-      if (index != -1) {
-        list[index] = result;
-      } else {
-        list.add(result);
+        .doOnDone(stopScan);
+
+    await for (final event in stream) {
+      if (event.method == "ScanResult") {
+        final p = protos.ScanResult.fromBuffer(event.arguments);
+        final result = ScanResult.fromProto(p);
+        final list = _scanResults.value;
+        int index = list.indexOf(result);
+        if (index != -1) {
+          list[index] = result;
+        } else {
+          list.add(result);
+        }
+        _scanResults.add(list);
+        yield result;
+      } else if (event.method == "ScanError") {
+        final p = protos.ScanError.fromBuffer(event.arguments);
+        final error = ScanError.fromProto(p);
+        yield* Stream.error(error);
       }
-      _scanResults.add(list);
-      return result;
-    });
+    }
   }
 
   /// Starts a scan and returns a future that will complete once the scan has finished.
@@ -326,6 +332,27 @@ class ScanResult {
   @override
   String toString() {
     return 'ScanResult{device: $device, advertisementData: $advertisementData, rssi: $rssi, timeStamp: $timeStamp}';
+  }
+}
+
+class ScanError {
+  final int code;
+
+  ScanError.fromProto(protos.ScanError p) : code = p.code;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ScanError &&
+          runtimeType == other.runtimeType &&
+          code == other.code;
+
+  @override
+  int get hashCode => code.hashCode;
+
+  @override
+  String toString() {
+    return 'ScanError{code: $code}';
   }
 }
 

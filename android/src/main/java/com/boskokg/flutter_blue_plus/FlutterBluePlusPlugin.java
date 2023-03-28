@@ -347,6 +347,7 @@ public class FlutterBluePlusPlugin implements FlutterPlugin, MethodCallHandler, 
 
           // If device is already connected, return error
           if(mDevices.containsKey(deviceId) && isConnected) {
+            log(LogLevel.DEBUG, "already connected");
             result.error("already_connected", "connection with device already exists", null);
             return;
           }
@@ -355,6 +356,7 @@ public class FlutterBluePlusPlugin implements FlutterPlugin, MethodCallHandler, 
           BluetoothDeviceCache bluetoothDeviceCache = mDevices.get(deviceId);
           if(bluetoothDeviceCache != null && !isConnected) {
             if(bluetoothDeviceCache.gatt.connect()){
+              log(LogLevel.DEBUG, "Reconnected");
               result.success(null);
             } else {
               result.error("reconnect_error", "error when reconnecting to device", null);
@@ -362,6 +364,8 @@ public class FlutterBluePlusPlugin implements FlutterPlugin, MethodCallHandler, 
             return;
           }
 
+
+          log(LogLevel.DEBUG, "Connecting to a new device " + deviceId);
           // New request, connect and add gattServer to Map
           BluetoothGatt gattServer;
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -911,6 +915,8 @@ public class FlutterBluePlusPlugin implements FlutterPlugin, MethodCallHandler, 
         @Override
         public void onScanFailed(int errorCode) {
           super.onScanFailed(errorCode);
+          Protos.ScanError.Builder p = Protos.ScanError.newBuilder();
+          invokeMethodUIThread("ScanError", p.setCode(errorCode).build().toByteArray());
         }
       };
     }
