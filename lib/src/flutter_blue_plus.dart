@@ -30,10 +30,12 @@ class FlutterBluePlus {
   }
 
   static final FlutterBluePlus _instance = FlutterBluePlus._();
+
   static FlutterBluePlus get instance => _instance;
 
   /// Log level of the instance, default is all messages (debug).
   LogLevel _logLevel = LogLevel.debug;
+
   LogLevel get logLevel => _logLevel;
 
   /// Checks whether the device supports Bluetooth
@@ -74,6 +76,7 @@ class FlutterBluePlus {
   }
 
   final BehaviorSubject<bool> _isScanning = BehaviorSubject.seeded(false);
+
   Stream<bool> get isScanning => _isScanning.stream;
 
   final BehaviorSubject<List<ScanResult>> _scanResults =
@@ -126,7 +129,8 @@ class FlutterBluePlus {
 
   /// Sets a unique id (required on iOS for restoring app on background-scan)
   /// should be called before any other methods.
-  Future setUniqueId(String uniqueid) => _channel.invokeMethod('setUniqueId',uniqueid.toString());
+  Future setUniqueId(String uniqueid) =>
+      _channel.invokeMethod('setUniqueId', uniqueid.toString());
 
   /// Starts a scan for Bluetooth Low Energy devices and returns a stream
   /// of the [ScanResult] results as they are received.
@@ -285,6 +289,7 @@ enum BluetoothState {
 
 class ScanMode {
   const ScanMode(this.value);
+
   static const lowPower = ScanMode(0);
   static const balanced = ScanMode(1);
   static const lowLatency = ScanMode(2);
@@ -294,6 +299,7 @@ class ScanMode {
 
 class DeviceIdentifier {
   final String id;
+
   const DeviceIdentifier(this.id);
 
   @override
@@ -383,26 +389,31 @@ class AdvertisementData {
   /// Documentation comes from here: https://docs.silabs.com/bluetooth/latest/general/adv-and-scanning/bluetooth-adv-data-basics
   static List<AdvertisementDataElement> parseRawAdvertisementBytes(
       Uint8List rawAdvertisingBytes) {
-    List<AdvertisementDataElement> otherData = [];
-    for (int advCounter = 0;
-        advCounter < rawAdvertisingBytes.length;
-        advCounter++) {
-      int dataLen = rawAdvertisingBytes[advCounter++];
-      if (dataLen == 0) continue;
-      int typeIdentifier = rawAdvertisingBytes[advCounter++];
-      int offset = (dataLen - 2);
-      otherData.add(
-        AdvertisementDataElement(
-          identifier: typeIdentifier,
-          value: rawAdvertisingBytes.sublist(
-            advCounter,
-            advCounter + (offset + 1),
+    try {
+      List<AdvertisementDataElement> otherData = [];
+      for (int advCounter = 0;
+          advCounter < rawAdvertisingBytes.length;
+          advCounter++) {
+        int dataLen = rawAdvertisingBytes[advCounter++];
+        if (dataLen == 0) continue;
+        int typeIdentifier = rawAdvertisingBytes[advCounter++];
+        int offset = (dataLen - 2);
+        otherData.add(
+          AdvertisementDataElement(
+            identifier: typeIdentifier,
+            value: rawAdvertisingBytes.sublist(
+              advCounter,
+              advCounter + (offset + 10),
+            ),
           ),
-        ),
-      ); // +1 as end must be the next element
-      advCounter += offset;
+        ); // +1 as end must be the next element
+        advCounter += offset;
+      }
+      return otherData;
+    } catch (e) {
+      throw Exception(
+          "Error while parsing raw advertising bytes: ${e.toString()}, raw bytes: ${hex.encode(rawAdvertisingBytes)}");
     }
-    return otherData;
   }
 
   AdvertisementData.fromProto(protos.AdvertisementData p)
