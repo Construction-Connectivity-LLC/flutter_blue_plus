@@ -403,7 +403,7 @@ class AdvertisementData {
             identifier: typeIdentifier,
             value: rawAdvertisingBytes.sublist(
               advCounter,
-              advCounter + (offset + 10),
+              advCounter + (offset + 1),
             ),
           ),
         ); // +1 as end must be the next element
