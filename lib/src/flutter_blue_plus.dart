@@ -412,7 +412,7 @@ class AdvertisementData {
       return otherData;
     } catch (e) {
       throw Exception(
-          "Error while parsing raw advertising bytes: ${e.toString()}, raw bytes: ${hex.encode(rawAdvertisingBytes)}");
+          "Error while parsing raw advertising bytes: ${e.toString()}, raw bytes: $rawAdvertisingBytes");
     }
   }
 
