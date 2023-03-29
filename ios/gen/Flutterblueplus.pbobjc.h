@@ -237,6 +237,7 @@ typedef GPB_ENUM(ProtosScanSettings_FieldNumber) {
   ProtosScanSettings_FieldNumber_ServiceUuidsArray = 2,
   ProtosScanSettings_FieldNumber_AllowDuplicates = 3,
   ProtosScanSettings_FieldNumber_MacAddressesArray = 4,
+  ProtosScanSettings_FieldNumber_ManufacturerIdsArray = 5,
 };
 
 GPB_FINAL @interface ProtosScanSettings : GPBMessage
@@ -252,6 +253,10 @@ GPB_FINAL @interface ProtosScanSettings : GPBMessage
 @property(nonatomic, readwrite, strong, null_resettable) NSMutableArray<NSString*> *macAddressesArray;
 /** The number of items in @c macAddressesArray without causing the array to be created. */
 @property(nonatomic, readonly) NSUInteger macAddressesArray_Count;
+
+@property(nonatomic, readwrite, strong, null_resettable) GPBInt32Array *manufacturerIdsArray;
+/** The number of items in @c manufacturerIdsArray without causing the array to be created. */
+@property(nonatomic, readonly) NSUInteger manufacturerIdsArray_Count;
 
 @end
 
