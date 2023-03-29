@@ -1,6 +1,6 @@
 ///
 //  Generated code. Do not modify.
-//  source: flutterblueplus.proto
+//  source: protos/flutterblueplus.proto
 //
 // @dart = 2.12
 // ignore_for_file: annotate_overrides,camel_case_types,constant_identifier_names,deprecated_member_use_from_same_package,directives_ordering,library_prefixes,non_constant_identifier_names,prefer_final_fields,return_of_invalid_type,unnecessary_const,unnecessary_import,unnecessary_this,unused_import,unused_shown_name
@@ -105,6 +105,16 @@ const ScanResult$json = const {
 
 /// Descriptor for `ScanResult`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List scanResultDescriptor = $convert.base64Decode('CgpTY2FuUmVzdWx0EigKBmRldmljZRgBIAEoCzIQLkJsdWV0b290aERldmljZVIGZGV2aWNlEkEKEmFkdmVydGlzZW1lbnRfZGF0YRgCIAEoCzISLkFkdmVydGlzZW1lbnREYXRhUhFhZHZlcnRpc2VtZW50RGF0YRISCgRyc3NpGAMgASgFUgRyc3Np');
+@$core.Deprecated('Use scanErrorDescriptor instead')
+const ScanError$json = const {
+  '1': 'ScanError',
+  '2': const [
+    const {'1': 'code', '3': 1, '4': 1, '5': 5, '10': 'code'},
+  ],
+};
+
+/// Descriptor for `ScanError`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List scanErrorDescriptor = $convert.base64Decode('CglTY2FuRXJyb3ISEgoEY29kZRgBIAEoBVIEY29kZQ==');
 @$core.Deprecated('Use connectRequestDescriptor instead')
 const ConnectRequest$json = const {
   '1': 'ConnectRequest',

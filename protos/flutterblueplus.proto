@@ -52,6 +52,10 @@ message ScanResult {
   int32 rssi = 3;
 }
 
+message ScanError {
+  int32 code = 1;
+}
+
 message ConnectRequest {
   string remote_id = 1;
   bool android_auto_connect = 2;
