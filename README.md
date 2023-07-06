@@ -6,13 +6,23 @@
 </p>
 <br><br>
 
+**Note: this plugin is continuous work from FlutterBlue since maintenance stopped.**
+
+## Foreward
+
+I highly recommend QuickBlue (https://pub.dev/packages/quick_blue) in favor of FlutterBlue. It has a simpler API, a much smaller codebase, and supports iOS, MacOS, Android, Windows, and partial Linux support. 
+
 ## Introduction
 
-FlutterBluePlus is a bluetooth plugin for [Flutter](https://flutter.dev), a new app SDK to help developers build modern multi-platform apps. Note: this plugin is continuous work from FlutterBlue since maintaince stoped.
+FlutterBluePlus is a bluetooth plugin for [Flutter](https://flutter.dev), a new app SDK to help developers build modern multi-platform apps. 
 
-## Alpha version
+## The State of Master Branch 
 
-**This package must be tested on a real device.**
+- Todo: Remove Protofbuf for Android
+
+I started work removing protobuf [See Here](https://github.com/boskokg/flutter_blue_plus/commit/1848617e6ce25385c2a7b4129aa199801bcfee71). iOS and MacOS are done. 
+
+Android still needs to be updated to remove protobuf. 
 
 ## Cross-Platform Bluetooth LE
 FlutterBluePlus aims to offer the most from both platforms (iOS and Android).
@@ -142,6 +152,15 @@ In the **ios/Runner/Info.plist** let’s add:
 
 For location permissions on iOS see more at: [https://developer.apple.com/documentation/corelocation/requesting_authorization_for_location_services](https://developer.apple.com/documentation/corelocation/requesting_authorization_for_location_services)
 
+### Android ProGuard rules
+
+In case you are using ProGuard add the following snippet to your `proguard-rules.pro` file:
+
+```
+-keep public class * extends com.google.protobuf.** { *; }
+```
+
+This will prevent issues like [#300](https://github.com/boskokg/flutter_blue_plus/issues/300).
 
 ## Reference
 ### FlutterBlue API
@@ -163,6 +182,9 @@ For location permissions on iOS see more at: [https://developer.apple.com/docume
 | mtu                         |  :white_check_mark:  |  :white_check_mark:  | Stream of mtu size changes. |
 | requestMtu                  |  :white_check_mark:  |                      | Request to change the MTU for the device. |
 | readRssi                    |  :white_check_mark:  |  :white_check_mark:  | Read RSSI from a connected device. |
+| requestConnectionPriority   |  :white_check_mark:  |                      | Request to update a high priority, low latency connection. An application should only request high priority connection parameters to transfer large amounts of data over LE quickly. |
+| removeBond                  |  :white_check_mark:  |                      | Remove Bluetooth Bond of device |
+| setPreferredPhy             |  :white_check_mark:  |                      | Set preferred RX and TX phy for connection and phy options 
 
 ### BluetoothCharacteristic API
 |                             |       Android        |         iOS          |             Description            |

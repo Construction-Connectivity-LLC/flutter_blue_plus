@@ -1,3 +1,47 @@
+## 1.6.1
+* Android: fix compile error (regression in 1.6.0)
+* Adnroid: significantly clean up all code
+
+## 1.6.0
+* Dart: close BufferStream listen on stopScan
+* Dart: don't repropogate Mutex error
+* Dart: Characteristic Read/Write: improve stacktrace on error
+* Windows: add support for windows. thanks @Yongle-Fu
+* MacOS: use symbolic links to iOS version, to keep internal code in sync
+* Android: reformat code
+
+
+## 1.5.2
+* fix: android setNotification was throwing exception (regression)
+
+## 1.5.1
+* fix: fix issue where startScan can hang forever (regression)
+* fix: some scanResults could be missed due to race condition (theoretically)
+* api: dont export util classes & functions. they've been made library-private.
+* iOS: prepend all ios logs with '[FBP-iOS]' prefix
+* iOS: log errors on failure
+* iOS: logs now adhere to logLevel
+
+## 1.5.0
+* api: Add isScanningNow variable
+* fix: writeCharacteristic (and other similar functions) exception could be missed
+* fix: setNotifyValue should check for success and throw error on failure
+* fix: race conditions in connect(), disconnect(), readRssi(), writeCharacteristic(), readCharacteristic()
+* macOS: add support for macOS
+* android: replace deprecated bluetooth enable with 'Enable-Intent'
+* android: Removed maxSdkVersion=30 in manifest
+* android: Add function: setPreferredPh
+* android: Add function: removeBond
+* android: Add function: requestConnectionPriority 
+* android: allow for simultaneous MAC and ServiceUuid ScanFilters
+* android: request location permission on Android 12+ when scanning (needed on some phones)
+* ios: Fixed Bluetooth adapter being stuck in unknown state
+* ios: Fixed dropping packets during bulk write without response
+* ios: Use CBCentralManagerOptionShowPowerAlertKey for better UI popups
+* example: fix android permissions
+* dart: Removed RxDart and other dependencies
+
+
 ## 1.4.0
 * Android: Add clear gatt cache method #142 (thanks to joistaus)
 * Android: Opt-out of the `neverForLocation` permission flag for the `BLUETOOTH_SCAN` permission. (thanks to navaronbracke)

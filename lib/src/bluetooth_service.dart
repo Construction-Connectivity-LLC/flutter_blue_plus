@@ -11,7 +11,7 @@ class BluetoothService {
   final List<BluetoothCharacteristic> characteristics;
   final List<BluetoothService> includedServices;
 
-  BluetoothService.fromProto(protos.BluetoothService p)
+  BluetoothService.fromProto(BmBluetoothService p)
       : uuid = Guid(p.uuid),
         deviceId = DeviceIdentifier(p.remoteId),
         isPrimary = p.isPrimary,
@@ -24,6 +24,12 @@ class BluetoothService {
 
   @override
   String toString() {
-    return 'BluetoothService{uuid: $uuid, deviceId: $deviceId, isPrimary: $isPrimary, characteristics: $characteristics, includedServices: $includedServices}';
+    return 'BluetoothService{'
+        'uuid: $uuid, '
+        'deviceId: $deviceId, '
+        'isPrimary: $isPrimary, '
+        'characteristics: $characteristics, '
+        'includedServices: $includedServices'
+        '}';
   }
 }

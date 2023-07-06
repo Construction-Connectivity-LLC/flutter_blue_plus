@@ -1,6 +1,6 @@
 #
 # To learn more about a Podspec see http://guides.cocoapods.org/syntax/podspec.html.
-# Run `pod lib lint flutter_blue_plus.podspec` to validate before publishing.
+# Run `pod lib lint flutter_blue_plus.podspec' to validate before publishing.
 #
 Pod::Spec.new do |s|
   s.name             = 'flutter_blue_plus'
@@ -13,8 +13,10 @@ Pod::Spec.new do |s|
   s.source           = { :path => '.' }
   s.source_files = 'Classes/**/*'
   s.public_header_files = 'Classes/**/*.h'
-  s.dependency 'Flutter'
-  s.platform = :ios, '9.0'
+  s.dependency 'FlutterMacOS'
+  s.platform = :osx, '12.00'
   s.framework = 'CoreBluetooth'
-  s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', }
+  s.pod_target_xcconfig = {
+    'DEFINES_MODULE' => 'YES',
+  }
 end
