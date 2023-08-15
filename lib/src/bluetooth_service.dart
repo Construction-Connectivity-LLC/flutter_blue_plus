@@ -1,19 +1,22 @@
-// Copyright 2017, Paul DeMarco.
+// Copyright 2023, Charles Weinberger & Paul DeMarco.
 // All rights reserved. Use of this source code is governed by a
 // BSD-style license that can be found in the LICENSE file.
 
 part of flutter_blue_plus;
 
 class BluetoothService {
-  final Guid uuid;
-  final DeviceIdentifier deviceId;
+  final DeviceIdentifier remoteId;
+  final Guid serviceUuid;
   final bool isPrimary;
   final List<BluetoothCharacteristic> characteristics;
   final List<BluetoothService> includedServices;
 
-  BluetoothService.fromProto(protos.BluetoothService p)
-      : uuid = Guid(p.uuid),
-        deviceId = DeviceIdentifier(p.remoteId),
+  // convenience accessor
+  Guid get uuid => serviceUuid;
+
+  BluetoothService.fromProto(BmBluetoothService p)
+      : remoteId = DeviceIdentifier(p.remoteId),
+        serviceUuid = p.serviceUuid,
         isPrimary = p.isPrimary,
         characteristics = p.characteristics
             .map((c) => BluetoothCharacteristic.fromProto(c))
@@ -24,6 +27,15 @@ class BluetoothService {
 
   @override
   String toString() {
-    return 'BluetoothService{uuid: $uuid, deviceId: $deviceId, isPrimary: $isPrimary, characteristics: $characteristics, includedServices: $includedServices}';
+    return 'BluetoothService{'
+        'remoteId: $remoteId, '
+        'serviceUuid: $serviceUuid, '
+        'isPrimary: $isPrimary, '
+        'characteristics: $characteristics, '
+        'includedServices: $includedServices'
+        '}';
   }
+
+  @Deprecated('Use remoteId instead')
+  DeviceIdentifier get deviceId => remoteId;
 }

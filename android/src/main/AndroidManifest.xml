@@ -1,15 +1,6 @@
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-  package="com.boskokg.flutter_blue_plus">
-
-    <!-- New Bluetooth permissions in Android 12
-           https://developer.android.com/about/versions/12/features/bluetooth-permissions
-      -->
-    <uses-permission android:name="android.permission.BLUETOOTH_SCAN"
-        android:usesPermissionFlags="neverForLocation" />
-    <uses-permission android:name="android.permission.BLUETOOTH_CONNECT" />
-
-    <!-- Request legacy Bluetooth permissions on older devices. -->
-    <uses-permission android:name="android.permission.BLUETOOTH" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" android:maxSdkVersion="30" />
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<!-- This file must be here to fix build errors in Flutter V2 -->
+<!-- But we intentionally leave this blank because android  bluetooth permissions are
+     complicated and always changing. By leaving this blank, users can set exactly the
+     permissions they want, without having to 'undo' the permissions we set here -->
 </manifest>
