@@ -162,6 +162,11 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
                                     message:@"iOS does not support turning off bluetooth"
                                     details:NULL]);
         }
+        else if([@"openBluetoothSettings" isEqualToString:call.method]) {
+            [[CBCentralManager alloc] initWithDelegate:nil queue:nil
+                        options: @{CBCentralManagerOptionShowPowerAlertKey: @(YES)}];
+            result(nil);
+          }
         else if ([@"startScan" isEqualToString:call.method])
         {
             // See BmScanSettings
