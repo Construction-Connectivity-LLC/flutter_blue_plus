@@ -1851,6 +1851,7 @@ public class FlutterBluePlusPlugin implements
             if(serviceUuids != null) {
                 advertisementData.put("service_uuids", serviceUuidList);
             }
+            advertisementData.put("raw_bytes", scanRecord.getBytes());
         }
 
         HashMap<String, Object> map = new HashMap<>();
