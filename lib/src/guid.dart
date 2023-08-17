@@ -65,7 +65,7 @@ class Guid {
 
   @override
   String toString() {
-    if (_bytes.length == 2) return hex.encode(_bytes.sublist(0, 2));
+    if (_bytes.length == 2) return _hexEncode(_bytes.sublist(0, 2));
     String one = _hexEncode(_bytes.sublist(0, 4));
     String two = _hexEncode(_bytes.sublist(4, 6));
     String three = _hexEncode(_bytes.sublist(6, 8));

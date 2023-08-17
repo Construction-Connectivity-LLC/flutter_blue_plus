@@ -5,6 +5,7 @@
 package com.boskokg.flutter_blue_plus;
 
 import android.Manifest;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Application;
 import android.bluetooth.BluetoothAdapter;
@@ -190,6 +191,7 @@ public class FlutterBluePlusPlugin implements
     // ██       ██   ██  ██       ██
     //  ██████  ██   ██  ███████  ███████
 
+    @SuppressLint("MissingPermission")
     @Override
     public void onMethodCall(@NonNull MethodCall call,
                                  @NonNull Result result)
@@ -335,6 +337,8 @@ public class FlutterBluePlusPlugin implements
                     HashMap<String, Object> data = call.arguments();
                     List<String> serviceUuids = (List<String>) data.get("service_uuids");
                     List<String> macAddresses = (List<String>) data.get("mac_addresses");
+                    Object manufacturer_id = data.get("manufacturer_id");
+                    //todo
                     boolean allowDuplicates =        (boolean) data.get("allow_duplicates");
                     int scanMode =                       (int) data.get("android_scan_mode");
                     boolean usesFineLocation =       (boolean) data.get("android_uses_fine_location");
@@ -392,11 +396,8 @@ public class FlutterBluePlusPlugin implements
                             filters.add(f);
                         }
 
-
-                      for (int i = 0; i < manufacturerIdsCount; i++) {
-                        int manufacturerId = proto.getManufacturerIds(i);
-                        filters.add(new ScanFilter.Builder().setManufacturerData(manufacturerId, new byte[1]).build());
-                      }
+                        if (manufacturer_id != null)
+                        filters.add(new ScanFilter.Builder().setManufacturerData((int) manufacturer_id, new byte[0]).build());
 
                         scanner.startScan(filters, settings, getScanCallback());
 
@@ -1755,6 +1756,7 @@ public class FlutterBluePlusPlugin implements
                 }
             }
         } while (true);
+        response.put("raw_bytes", rawData);
         return response;
     }
 

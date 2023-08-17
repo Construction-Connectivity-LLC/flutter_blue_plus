@@ -34,6 +34,8 @@ class BmAdvertisementData {
   final bool connectable;
   final Map<int, List<int>> manufacturerData;
   final Map<String, List<int>> serviceData;
+  final Uint8List rawBytes;
+  final List<AdvertisementDataElement> elements;
 
   // We use strings and not Guid because advertisement UUIDs can
   // be 32-bit UUIDs, 64-bit, etc i.e. "FE56"
@@ -46,6 +48,8 @@ class BmAdvertisementData {
     required this.manufacturerData,
     required this.serviceData,
     required this.serviceUuids,
+    required this.rawBytes,
+    required this.elements,
   });
 
   factory BmAdvertisementData.fromMap(Map<dynamic, dynamic> json) {
@@ -53,6 +57,8 @@ class BmAdvertisementData {
     var rawManufacturerData = json['manufacturer_data'] ?? {};
     var rawServiceData = json['service_data'] ?? {};
     var rawServiceUuids = json['service_uuids'] ?? [];
+    List<dynamic> rawBytes = json['raw_bytes'] ?? [];
+    var rawElements = json['elements'] ?? [];
 
     // Cast the data to the right type
     Map<int, List<int>> manufacturerData = {};
@@ -73,6 +79,8 @@ class BmAdvertisementData {
     for (var val in rawServiceUuids) {
       serviceUuids.add(val);
     }
+    List<int> bytes = rawBytes.map((e) => e as int).toList();
+    List<AdvertisementDataElement> elements = [];
 
     // Construct the BmAdvertisementData
     return BmAdvertisementData(
@@ -81,6 +89,8 @@ class BmAdvertisementData {
       connectable: json['connectable'] != 0,
       manufacturerData: manufacturerData,
       serviceData: serviceData,
+      rawBytes: Uint8List.fromList(bytes),
+      elements: elements,
       serviceUuids: serviceUuids,
     );
   }
@@ -89,6 +99,7 @@ class BmAdvertisementData {
 class BmScanSettings {
   final List<Guid> serviceUuids;
   final List<String> macAddresses;
+  final int? manufacturerId;
   final bool allowDuplicates;
   final int androidScanMode;
   final bool androidUsesFineLocation;
@@ -99,6 +110,7 @@ class BmScanSettings {
     required this.allowDuplicates,
     required this.androidScanMode,
     required this.androidUsesFineLocation,
+    required this.manufacturerId,
   });
 
   Map<dynamic, dynamic> toMap() {
@@ -111,6 +123,7 @@ class BmScanSettings {
     final Map<dynamic, dynamic> data = {};
     data['service_uuids'] = s;
     data['mac_addresses'] = macAddresses;
+    data['manufacturer_id'] = manufacturerId;
     data['allow_duplicates'] = allowDuplicates;
     data['android_scan_mode'] = androidScanMode;
     data['android_uses_fine_location'] = androidUsesFineLocation;

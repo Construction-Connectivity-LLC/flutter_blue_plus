@@ -12,23 +12,29 @@ class FlutterBluePlus {
   static bool _initialized = false;
 
   // native platform channel
-  static final MethodChannel _methods = const MethodChannel('flutter_blue_plus/methods');
+  static final MethodChannel _methods =
+      const MethodChannel('flutter_blue_plus/methods');
 
   // a broadcast stream version of the MethodChannel
   // ignore: close_sinks
-  static final StreamController<MethodCall> _methodStream = StreamController.broadcast();
+  static final StreamController<MethodCall> _methodStream =
+      StreamController.broadcast();
 
   // we always keep track of these device variables
-  static final Map<DeviceIdentifier, List<BluetoothService>> _knownServices = {};
-  static final Map<DeviceIdentifier, BmConnectionStateResponse> _connectionStates = {};
+  static final Map<DeviceIdentifier, List<BluetoothService>> _knownServices =
+      {};
+  static final Map<DeviceIdentifier, BmConnectionStateResponse>
+      _connectionStates = {};
   static final Map<DeviceIdentifier, BmBondStateResponse> _bondStates = {};
   static final Map<DeviceIdentifier, BmMtuChangedResponse> _mtuValues = {};
 
   // stream used for the isScanning public api
-  static final _StreamController<bool> _isScanning = _StreamController(initialValue: false);
+  static final _StreamController<bool> _isScanning =
+      _StreamController(initialValue: false);
 
   // stream used for the scanResults public api
-  static final _StreamController<List<ScanResult>> _scanResultsList = _StreamController(initialValue: []);
+  static final _StreamController<List<ScanResult>> _scanResultsList =
+      _StreamController(initialValue: []);
 
   // ScanResponses are received from the system one-by-one from the method broadcast stream.
   // This variable buffers all the results into a single-subscription stream.
@@ -40,7 +46,7 @@ class FlutterBluePlus {
   static Timer? _scanTimeout;
 
   /// FlutterBluePlus log level
-  staticLogLevel _logLevel = LogLevel.debug;
+  static LogLevel _logLevel = LogLevel.debug;
 
   static bool _logColor = true;
 
@@ -51,16 +57,18 @@ class FlutterBluePlus {
   static LogLevel get logLevel => _logLevel;
 
   /// Checks whether the device allows Bluetooth for your app
-  static Future<bool> get isAvailable async => await _invokeMethod('isAvailable');
+  static Future<bool> get isAvailable async =>
+      await _invokeMethod('isAvailable');
 
   /// Return the friendly Bluetooth name of the local Bluetooth adapter
-  static Future<String> get adapterName async => await _invokeMethod('getAdapterName');
+  static Future<String> get adapterName async =>
+      await _invokeMethod('getAdapterName');
 
   // returns whether we are scanning as a stream
   static Stream<bool> get isScanning => _isScanning.stream;
 
   Future<void> openBluetoothSettings() {
-    return _channel.invokeMethod('openBluetoothSettings');
+    return _invokeMethod('openBluetoothSettings');
   }
 
   // are we scanning right now?
@@ -68,11 +76,12 @@ class FlutterBluePlus {
 
   /// Turn on Bluetooth (Android only),
   static Future<void> turnOn({int timeout = 10}) async {
-    Stream<BluetoothAdapterState> responseStream = adapterState.where((s) => s == BluetoothAdapterState.on);
+    Stream<BluetoothAdapterState> responseStream =
+        adapterState.where((s) => s == BluetoothAdapterState.on);
 
     // Start listening now, before invokeMethod, to ensure we don't miss the response
 
-  Future<BluetoothAdapterState> futureResponse = responseStream.first;
+    Future<BluetoothAdapterState> futureResponse = responseStream.first;
 
     await _invokeMethod('turnOn');
 
@@ -130,7 +139,7 @@ class FlutterBluePlus {
   /// Sets a unique id (required on iOS for restoring app on background-scan)
   /// should be called before any other methods.
   Future setUniqueId(String uniqueid) =>
-      _channel.invokeMethod('setUniqueId', uniqueid.toString());
+      _invokeMethod('setUniqueId', uniqueid.toString());
 
   /// Starts a scan for Bluetooth Low Energy devices and returns a stream
   /// of the [ScanResult] results as they are received.
@@ -142,8 +151,9 @@ class FlutterBluePlus {
   static Stream<ScanResult> scan({
     ScanMode scanMode = ScanMode.lowLatency,
     List<Guid> withServices = const [],
+    List<Guid> withDevices = const [],
     List<String> macAddresses = const [],
-    List<int> manufacturerIds = const [],
+    int? manufacturerIds,
     Duration? timeout,
     bool allowDuplicates = false,
     bool androidUsesFineLocation = false,
@@ -154,12 +164,15 @@ class FlutterBluePlus {
           macAddresses: macAddresses,
           allowDuplicates: allowDuplicates,
           androidScanMode: scanMode.value,
-          androidUsesFineLocation: androidUsesFineLocation)
-      ..manufacturerIds.addAll(manufacturerIds);
+          androidUsesFineLocation: androidUsesFineLocation,
+          manufacturerId: manufacturerIds);
 
       if (_isScanning.value == true) {
         throw FlutterBluePlusException(
-            ErrorPlatform.dart, "scan", FbpErrorCode.scanInProgress.index, 'another scan already in progress');
+            ErrorPlatform.dart,
+            "scan",
+            FbpErrorCode.scanInProgress.index,
+            'another scan already in progress');
       }
 
       // push to isScanning stream
@@ -169,7 +182,8 @@ class FlutterBluePlus {
       // Clear scan results list
       _scanResultsList.add(<ScanResult>[]);
 
-      Stream<BmScanResponse> responseStream = FlutterBluePlus._methodStream.stream
+      Stream<BmScanResponse> responseStream = FlutterBluePlus
+          ._methodStream.stream
           .where((m) => m.method == "OnScanResponse")
           .map((m) => m.arguments)
           .map((args) => BmScanResponse.fromMap(args))
@@ -194,8 +208,8 @@ class FlutterBluePlus {
       await for (BmScanResponse response in _scanResponseBuffer!.stream) {
         // failure?
         if (response.failed != null) {
-          throw FlutterBluePlusException(
-              _nativeError, "scan", response.failed!.errorCode, response.failed!.errorString);
+          throw FlutterBluePlusException(_nativeError, "scan",
+              response.failed!.errorCode, response.failed!.errorString);
         }
 
         // no result?
@@ -228,7 +242,7 @@ class FlutterBluePlus {
   static Future startScan({
     ScanMode scanMode = ScanMode.lowLatency,
     List<Guid> withServices = const [],
-    List<int> manufacturerIds = const [],
+    int? manufacturerIds,
     List<Guid> withDevices = const [],
     List<String> macAddresses = const [],
     Duration? timeout,
@@ -275,13 +289,15 @@ class FlutterBluePlus {
 
     // keep track of bond state
     if (call.method == "OnBondStateChanged") {
-      BmBondStateResponse response = BmBondStateResponse.fromMap(call.arguments);
+      BmBondStateResponse response =
+          BmBondStateResponse.fromMap(call.arguments);
       _bondStates[DeviceIdentifier(response.remoteId)] = response;
     }
 
     // keep track of connection states
     if (call.method == "OnConnectionStateChanged") {
-      BmConnectionStateResponse response = BmConnectionStateResponse.fromMap(call.arguments);
+      BmConnectionStateResponse response =
+          BmConnectionStateResponse.fromMap(call.arguments);
       _connectionStates[DeviceIdentifier(response.remoteId)] = response;
       if (response.connectionState == BmConnectionStateEnum.disconnected) {
         // clear known services, must call discoverServices again
@@ -291,7 +307,8 @@ class FlutterBluePlus {
 
     // keep track of mtu values
     if (call.method == "OnMtuChanged") {
-      BmMtuChangedResponse response = BmMtuChangedResponse.fromMap(call.arguments);
+      BmMtuChangedResponse response =
+          BmMtuChangedResponse.fromMap(call.arguments);
       _mtuValues[DeviceIdentifier(response.remoteId)] = response;
     }
 
@@ -299,7 +316,8 @@ class FlutterBluePlus {
   }
 
   // invoke a platform method
-  static Future<dynamic> _invokeMethod(String method, [dynamic arguments]) async {
+  static Future<dynamic> _invokeMethod(String method,
+      [dynamic arguments]) async {
     // initialize response handler
     if (_initialized == false) {
       _initialized = true; // avoid recursion: must set before setLogLevel
@@ -334,7 +352,8 @@ class FlutterBluePlus {
   /// Turn off Bluetooth (Android only),
   @Deprecated('Deprecated in Android SDK 33 with no replacement')
   static Future<void> turnOff({int timeout = 10}) async {
-    Stream<BluetoothAdapterState> responseStream = adapterState.where((s) => s == BluetoothAdapterState.off);
+    Stream<BluetoothAdapterState> responseStream =
+        adapterState.where((s) => s == BluetoothAdapterState.off);
 
     // Start listening now, before invokeMethod, to ensure we don't miss the response
     Future<BluetoothAdapterState> futureResponse = responseStream.first;
@@ -346,7 +365,8 @@ class FlutterBluePlus {
 
   /// Checks if Bluetooth functionality is turned on
   @Deprecated('Use adapterState.first == BluetoothAdapterState.on instead')
-  static Future<bool> get isOn async => await adapterState.first == BluetoothAdapterState.on;
+  static Future<bool> get isOn async =>
+      await adapterState.first == BluetoothAdapterState.on;
 
   @Deprecated('Use adapterName instead')
   static Future<String> get name => adapterName;
@@ -358,7 +378,8 @@ class FlutterBluePlus {
   static void get instance => null;
 
   @Deprecated('Use connectedSystemDevices instead')
-  static Future<List<BluetoothDevice>> get connectedDevices => connectedSystemDevices;
+  static Future<List<BluetoothDevice>> get connectedDevices =>
+      connectedSystemDevices;
 }
 
 /// Log levels for FlutterBlue
@@ -372,7 +393,15 @@ enum LogLevel {
 }
 
 /// State of the bluetooth adapter.
-enum BluetoothAdapterState { unknown, unavailable, unauthorized, turningOn, on, turningOff, off }
+enum BluetoothAdapterState {
+  unknown,
+  unavailable,
+  unauthorized,
+  turningOn,
+  on,
+  turningOff,
+  off
+}
 
 class ScanMode {
   const ScanMode(this.value);
@@ -399,7 +428,8 @@ class DeviceIdentifier {
   int get hashCode => str.hashCode;
 
   @override
-  bool operator ==(other) => other is DeviceIdentifier && _compareAsciiLowerCase(str, other.str) == 0;
+  bool operator ==(other) =>
+      other is DeviceIdentifier && _compareAsciiLowerCase(str, other.str) == 0;
 }
 
 class ScanResult {
@@ -423,7 +453,10 @@ class ScanResult {
 
   @override
   bool operator ==(Object other) =>
-      identical(this, other) || other is ScanResult && runtimeType == other.runtimeType && device == other.device;
+      identical(this, other) ||
+      other is ScanResult &&
+          runtimeType == other.runtimeType &&
+          device == other.device;
 
   @override
   int get hashCode => device.hashCode;
@@ -436,27 +469,6 @@ class ScanResult {
         'rssi: $rssi, '
         'timeStamp: $timeStamp'
         '}';
-  }
-}
-
-class ScanError {
-  final int code;
-
-  ScanError.fromProto(protos.ScanError p) : code = p.code;
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-      other is ScanError &&
-          runtimeType == other.runtimeType &&
-          code == other.code;
-
-  @override
-  int get hashCode => code.hashCode;
-
-  @override
-  String toString() {
-    return 'ScanError{code: $code}';
   }
 }
 
@@ -523,6 +535,8 @@ class AdvertisementData {
     required this.manufacturerData,
     required this.serviceData,
     required this.serviceUuids,
+    required this.rawBytes,
+    required this.elements,
   });
 
   AdvertisementData.fromProto(BmAdvertisementData p)
@@ -538,7 +552,7 @@ class AdvertisementData {
 
   @override
   String toString() {
-    return 'AdvertisementData{localName: $localName, txPowerLevel: $txPowerLevel, connectable: $connectable, manufacturerData: $manufacturerData, serviceData: $serviceData, serviceUuids: $serviceUuids, rawBytes: ${hex.encode(rawBytes)}}';
+    return 'AdvertisementData{localName: $localName, txPowerLevel: $txPowerLevel, connectable: $connectable, manufacturerData: $manufacturerData, serviceData: $serviceData, serviceUuids: $serviceUuids, rawBytes: ${_hexEncode(rawBytes)}}';
   }
 }
 
@@ -572,7 +586,8 @@ class FlutterBluePlusException implements Exception {
   final int? code;
   final String? description;
 
-  FlutterBluePlusException(this.platform, this.function, this.code, this.description);
+  FlutterBluePlusException(
+      this.platform, this.function, this.code, this.description);
 
   @override
   String toString() {
