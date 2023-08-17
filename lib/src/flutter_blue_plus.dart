@@ -67,7 +67,7 @@ class FlutterBluePlus {
   // returns whether we are scanning as a stream
   static Stream<bool> get isScanning => _isScanning.stream;
 
-  Future<void> openBluetoothSettings() {
+  static Future<void> openBluetoothSettings() {
     return _invokeMethod('openBluetoothSettings');
   }
 
