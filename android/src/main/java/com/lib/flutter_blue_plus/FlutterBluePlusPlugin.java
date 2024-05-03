@@ -2425,6 +2425,8 @@ public class FlutterBluePlusPlugin implements
             }
         }
 
+        byte[] rawBytes = adv != null ? adv.getBytes() : new byte[0];
+
         // See: BmScanAdvertisement
         // perf: only add keys if they exists
         HashMap<String, Object> map = new HashMap<>();
@@ -2438,6 +2440,7 @@ public class FlutterBluePlusPlugin implements
         if (serviceData != null)         {map.put("service_data", serviceDataB);}
         if (serviceUuids != null)        {map.put("service_uuids", serviceUuidsB);}
         if (result.getRssi() != 0)       {map.put("rssi", result.getRssi());};
+        if (rawBytes.length > 0)         {map.put("raw_bytes", bytesToHex(rawBytes));}
         return map;
     }
 

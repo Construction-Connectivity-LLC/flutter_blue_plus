@@ -779,6 +779,7 @@ class AdvertisementData {
   final Map<int, List<int>> manufacturerData; // key: manufacturerId
   final Map<Guid, List<int>> serviceData; // key: service guid
   final List<Guid> serviceUuids;
+  final Uint8List rawBytes;
 
   /// raw manufacturer specific data
   List<List<int>> get msd {
@@ -797,6 +798,7 @@ class AdvertisementData {
     required this.manufacturerData,
     required this.serviceData,
     required this.serviceUuids,
+    required this.rawBytes,
   });
 
   AdvertisementData.fromProto(BmScanAdvertisement p)
@@ -806,6 +808,7 @@ class AdvertisementData {
         connectable = p.connectable,
         manufacturerData = p.manufacturerData,
         serviceData = p.serviceData,
+        rawBytes = p.rawBytes,
         serviceUuids = p.serviceUuids;
 
   @override

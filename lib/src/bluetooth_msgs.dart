@@ -108,6 +108,7 @@ class BmScanAdvertisement {
   final Map<Guid, List<int>> serviceData;
   final List<Guid> serviceUuids;
   final int rssi;
+  final Uint8List rawBytes;
 
   BmScanAdvertisement({
     required this.remoteId,
@@ -120,6 +121,7 @@ class BmScanAdvertisement {
     required this.serviceData,
     required this.serviceUuids,
     required this.rssi,
+    required this.rawBytes,
   });
 
   factory BmScanAdvertisement.fromMap(Map<dynamic, dynamic> json) {
@@ -146,6 +148,7 @@ class BmScanAdvertisement {
       serviceUuids.add(Guid(val));
     }
 
+    var rawBytes = json['raw_bytes'];
     return BmScanAdvertisement(
       remoteId: DeviceIdentifier(json['remote_id']),
       platformName: json['platform_name'],
@@ -157,6 +160,7 @@ class BmScanAdvertisement {
       serviceData: serviceData,
       serviceUuids: serviceUuids,
       rssi: json['rssi'] != null ? json['rssi'] : 0,
+      rawBytes: rawBytes != null ? Uint8List.fromList(_hexDecode(rawBytes)) : Uint8List(0),
     );
   }
 }
