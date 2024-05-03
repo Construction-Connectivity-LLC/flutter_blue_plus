@@ -94,8 +94,10 @@ class FlutterBluePlus {
       // skip previous results & push empty list
       return _scanResults.stream.skip(1).newStreamWithInitialValue([]);
     }
-  Future<void> openBluetoothSettings() {
-    return _channel.invokeMethod('openBluetoothSettings');
+  }
+
+  static Future<void> openBluetoothSettings() {
+    return _invokeMethod('openBluetoothSettings');
   }
 
   /// Get access to all device event streams
