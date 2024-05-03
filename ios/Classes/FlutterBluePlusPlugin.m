@@ -80,23 +80,23 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 }
 
 ////////////////////////////////////////////////////////////
-// ██   ██   █████   ███    ██  ██████   ██       ███████    
-// ██   ██  ██   ██  ████   ██  ██   ██  ██       ██         
-// ███████  ███████  ██ ██  ██  ██   ██  ██       █████      
-// ██   ██  ██   ██  ██  ██ ██  ██   ██  ██       ██         
-// ██   ██  ██   ██  ██   ████  ██████   ███████  ███████                                                       
-//                                                      
-// ███    ███  ███████  ████████  ██   ██   ██████   ██████  
-// ████  ████  ██          ██     ██   ██  ██    ██  ██   ██ 
-// ██ ████ ██  █████       ██     ███████  ██    ██  ██   ██ 
-// ██  ██  ██  ██          ██     ██   ██  ██    ██  ██   ██ 
-// ██      ██  ███████     ██     ██   ██   ██████   ██████                                              
-//                                                      
-//  ██████   █████   ██       ██                           
-// ██       ██   ██  ██       ██                           
-// ██       ███████  ██       ██                           
-// ██       ██   ██  ██       ██                           
-//  ██████  ██   ██  ███████  ███████                     
+// ██   ██   █████   ███    ██  ██████   ██       ███████
+// ██   ██  ██   ██  ████   ██  ██   ██  ██       ██
+// ███████  ███████  ██ ██  ██  ██   ██  ██       █████
+// ██   ██  ██   ██  ██  ██ ██  ██   ██  ██       ██
+// ██   ██  ██   ██  ██   ████  ██████   ███████  ███████
+//
+// ███    ███  ███████  ████████  ██   ██   ██████   ██████
+// ████  ████  ██          ██     ██   ██  ██    ██  ██   ██
+// ██ ████ ██  █████       ██     ███████  ██    ██  ██   ██
+// ██  ██  ██  ██          ██     ██   ██  ██    ██  ██   ██
+// ██      ██  ███████     ██     ██   ██   ██████   ██████
+//
+//  ██████   █████   ██       ██
+// ██       ██   ██  ██       ██
+// ██       ███████  ██       ██
+// ██       ██   ██  ██       ██
+//  ██████  ██   ██  ███████  ███████
 
 - (void)handleMethodCall:(FlutterMethodCall *)call result:(FlutterResult)result
 {
@@ -132,13 +132,13 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 
             self.checkForMtuChangesTimer = [NSTimer scheduledTimerWithTimeInterval:0.025
                 target:self
-                selector:@selector(checkForMtuChangesCallback) 
+                selector:@selector(checkForMtuChangesCallback)
                 userInfo:@{}
                 repeats:YES];
         }
-        // check that we have an adapter, except for the 
+        // check that we have an adapter, except for the
         // functions that don't need it
-        if (self.centralManager == nil && 
+        if (self.centralManager == nil &&
             [@"flutterRestart" isEqualToString:call.method] == false &&
             [@"connectedCount" isEqualToString:call.method] == false &&
             [@"setLogLevel" isEqualToString:call.method] == false &&
@@ -171,7 +171,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
             if (self.connectedPeripherals.count == 0) {
                 [self.knownPeripherals removeAllObjects];
             }
-            
+
             result(@(self.connectedPeripherals.count));
             return;
         }
@@ -210,7 +210,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
             // get state
             int adapterState = 0; // BmAdapterStateEnum.unknown
             if (self.centralManager) {
-                adapterState = [self bmAdapterStateEnum:self.centralManager.state];    
+                adapterState = [self bmAdapterStateEnum:self.centralManager.state];
             }
 
             // See BmBluetoothAdapterState
@@ -222,13 +222,17 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
         }
         else if([@"turnOn" isEqualToString:call.method])
         {
-            result([FlutterError errorWithCode:@"turnOn" 
+            result([FlutterError errorWithCode:@"turnOn"
                                     message:@"iOS does not support turning on bluetooth"
                                     details:NULL]);
         }
-        else if([@"turnOff" isEqualToString:call.method])
+        else if([@"openBluetoothSettings" isEqualToString:call.method]) {
+    [[CBCentralManager alloc] initWithDelegate:nil queue:nil
+                options: @{CBCentralManagerOptionShowPowerAlertKey: @(YES)}];
+    result(nil);
+  } else if([@"turnOff" isEqualToString:call.method])
         {
-            result([FlutterError errorWithCode:@"turnOff" 
+            result([FlutterError errorWithCode:@"turnOff"
                                     message:@"iOS does not support turning off bluetooth"
                                     details:NULL]);
         }
@@ -380,13 +384,13 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
                 // note: use CBConnectPeripheralOptionEnableAutoReconnect constant
                 // when all developers can be excpected to be on iOS 17+
                 [options setObject:autoConnect forKey:@"kCBConnectOptionEnableAutoReconnect"];
-            } 
+            }
 
             [self.centralManager connectPeripheral:peripheral options:options];
 
             // add to currently connecting peripherals
             [self.currentlyConnectingPeripherals setObject:peripheral forKey:remoteId];
-            
+
             result(@YES);
         }
         else if ([@"disconnect" isEqualToString:call.method])
@@ -401,7 +405,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
                 if (peripheral != nil) {
                     Log(LDEBUG, @"disconnect: cancelling connection in progress");
                     [self.currentlyConnectingPeripherals removeObjectForKey:remoteId];
-                }   
+                }
             }
             if (peripheral == nil) {
                 peripheral = [self getConnectedPeripheral:remoteId];
@@ -414,7 +418,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 
             // disconnect
             [self.centralManager cancelPeripheralConnection:peripheral];
-            
+
             result(@YES);
         }
         else if ([@"discoverServices" isEqualToString:call.method])
@@ -491,7 +495,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
             NSNumber  *writeTypeNumber      = args[@"write_type"];
             NSNumber  *allowLongWrite       = args[@"allow_long_write"];
             NSString  *value                = args[@"value"];
-            
+
             // Find peripheral
             CBPeripheral *peripheral = [self getConnectedPeripheral:remoteId];
             if (peripheral == nil) {
@@ -525,7 +529,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
                 NSString* s = @"canSendWriteWithoutResponse is false. you must slow down";
                 result([FlutterError errorWithCode:@"writeCharacteristic" message:s details:NULL]);
                 return;
-            } 
+            }
 
             // Find characteristic
             NSError *error = nil;
@@ -557,7 +561,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
             // remember the data we are writing
             NSString *key = [NSString stringWithFormat:@"%@:%@:%@", remoteId, serviceUuid, characteristicUuid];
             [self.writeChrs setObject:value forKey:key];
-                  
+
             // Write to characteristic
             [peripheral writeValue:[self convertHexToData:value] forCharacteristic:characteristic type:writeType];
 
@@ -713,7 +717,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 
             // Set notification value
             [peripheral setNotifyValue:[enable boolValue] forCharacteristic:characteristic];
-            
+
             result(@YES);
         }
         else if ([@"requestMtu" isEqualToString:call.method])
@@ -741,43 +745,43 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
         }
         else if([@"requestConnectionPriority" isEqualToString:call.method])
         {
-            result([FlutterError errorWithCode:@"requestConnectionPriority" 
+            result([FlutterError errorWithCode:@"requestConnectionPriority"
                                     message:@"android only"
                                     details:NULL]);
         }
         else if([@"getPhySupport" isEqualToString:call.method])
         {
-            result([FlutterError errorWithCode:@"getPhySupport" 
+            result([FlutterError errorWithCode:@"getPhySupport"
                                     message:@"android only"
                                     details:NULL]);
         }
         else if([@"setPreferredPhy" isEqualToString:call.method])
         {
-            result([FlutterError errorWithCode:@"setPreferredPhy" 
+            result([FlutterError errorWithCode:@"setPreferredPhy"
                                     message:@"android only"
                                     details:NULL]);
         }
         else if([@"getBondedDevices" isEqualToString:call.method])
         {
-            result([FlutterError errorWithCode:@"getBondedDevices" 
+            result([FlutterError errorWithCode:@"getBondedDevices"
                                     message:@"android only"
                                     details:NULL]);
         }
         else if([@"createBond" isEqualToString:call.method])
         {
-            result([FlutterError errorWithCode:@"setPreferredPhy" 
+            result([FlutterError errorWithCode:@"setPreferredPhy"
                                     message:@"android only"
                                     details:NULL]);
         }
         else if([@"removeBond" isEqualToString:call.method])
         {
-            result([FlutterError errorWithCode:@"removeBond" 
+            result([FlutterError errorWithCode:@"removeBond"
                                     message:@"android only"
                                     details:NULL]);
         }
         else if([@"clearGattCache" isEqualToString:call.method])
         {
-            result([FlutterError errorWithCode:@"clearGattCache" 
+            result([FlutterError errorWithCode:@"clearGattCache"
                                     message:@"android only"
                                     details:NULL]);
         }
@@ -795,17 +799,17 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 }
 
 //////////////////////////////////////////////////////////////////////
-// ██████   ██████   ██  ██    ██   █████   ████████  ███████ 
-// ██   ██  ██   ██  ██  ██    ██  ██   ██     ██     ██      
-// ██████   ██████   ██  ██    ██  ███████     ██     █████   
-// ██       ██   ██  ██   ██  ██   ██   ██     ██     ██      
+// ██████   ██████   ██  ██    ██   █████   ████████  ███████
+// ██   ██  ██   ██  ██  ██    ██  ██   ██     ██     ██
+// ██████   ██████   ██  ██    ██  ███████     ██     █████
+// ██       ██   ██  ██   ██  ██   ██   ██     ██     ██
 // ██       ██   ██  ██    ████    ██   ██     ██     ███████
 //
-// ██    ██  ████████  ██  ██       ███████ 
-// ██    ██     ██     ██  ██       ██      
-// ██    ██     ██     ██  ██       ███████ 
-// ██    ██     ██     ██  ██            ██ 
-//  ██████      ██     ██  ███████  ███████ 
+// ██    ██  ████████  ██  ██       ███████
+// ██    ██     ██     ██  ██       ██
+// ██    ██     ██     ██  ██       ███████
+// ██    ██     ██     ██  ██            ██
+//  ██████      ██     ██  ███████  ███████
 
 - (CBPeripheral *)getConnectedPeripheral:(NSString *)remoteId
 {
@@ -922,7 +926,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
         if ([func isEqualToString:@"adapterTurnOff"]) {
             // inexplicably, iOS does not call 'didDisconnectPeripheral' when
             // the adapter is turned off, so we must send these responses manually
-            
+
             // Note: when the adapter is turned off, it is an 'api misuse'
             // to call cancelPeripheralConnection. It is implied.
 
@@ -936,8 +940,8 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 
             // Send connection state
             [self.methodChannel invokeMethod:@"OnConnectionStateChanged" arguments:result];
-        } 
-        
+        }
+
         if ([func isEqualToString:@"flutterRestart"] && [self isAdapterOn]) {
             // request disconnection
             [self.centralManager cancelPeripheralConnection:peripheral];
@@ -953,7 +957,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     }
 
     // note: we do *not* clear self.knownPeripherals
-    // Otherwise the peripheral would not have any strong references 
+    // Otherwise the peripheral would not have any strong references
     // and would be garbage collected, making the didDisconnectPeripheral
     // callback not called
 
@@ -966,11 +970,11 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 }
 
 ////////////////////////////////////
-// ███    ███ ████████ ██    ██ 
-// ████  ████    ██    ██    ██ 
-// ██ ████ ██    ██    ██    ██ 
-// ██  ██  ██    ██    ██    ██ 
-// ██      ██    ██     ██████  
+// ███    ███ ████████ ██    ██
+// ████  ████    ██    ██    ██
+// ██ ████ ██    ██    ██    ██
+// ██  ██  ██    ██    ██    ██
+// ██      ██    ██     ██████
 
 // in iOS, mtu is negotatiated once automatically sometime after the
 // the connection process, but there is no platform callback for it.
@@ -1008,23 +1012,23 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////
-//  ██████  ██████    ██████  ███████  ███    ██  ████████  ██████    █████  ██      
-// ██       ██   ██  ██       ██       ████   ██     ██     ██   ██  ██   ██ ██      
-// ██       ██████   ██       █████    ██ ██  ██     ██     ██████   ███████ ██      
-// ██       ██   ██  ██       ██       ██  ██ ██     ██     ██   ██  ██   ██ ██      
-//  ██████  ██████    ██████  ███████  ██   ████     ██     ██   ██  ██   ██ ███████ 
-//                                                                                                                                          
-// ███    ███   █████   ███    ██   █████    ██████   ███████  ██████               
-// ████  ████  ██   ██  ████   ██  ██   ██  ██        ██       ██   ██              
-// ██ ████ ██  ███████  ██ ██  ██  ███████  ██   ███  █████    ██████               
-// ██  ██  ██  ██   ██  ██  ██ ██  ██   ██  ██    ██  ██       ██   ██              
-// ██      ██  ██   ██  ██   ████  ██   ██   ██████   ███████  ██   ██              
-//                                                                                                                                                   
-// ██████   ███████  ██       ███████   ██████    █████   ████████  ███████          
-// ██   ██  ██       ██       ██       ██        ██   ██     ██     ██               
-// ██   ██  █████    ██       █████    ██   ███  ███████     ██     █████            
-// ██   ██  ██       ██       ██       ██    ██  ██   ██     ██     ██               
-// ██████   ███████  ███████  ███████   ██████   ██   ██     ██     ███████ 
+//  ██████  ██████    ██████  ███████  ███    ██  ████████  ██████    █████  ██
+// ██       ██   ██  ██       ██       ████   ██     ██     ██   ██  ██   ██ ██
+// ██       ██████   ██       █████    ██ ██  ██     ██     ██████   ███████ ██
+// ██       ██   ██  ██       ██       ██  ██ ██     ██     ██   ██  ██   ██ ██
+//  ██████  ██████    ██████  ███████  ██   ████     ██     ██   ██  ██   ██ ███████
+//
+// ███    ███   █████   ███    ██   █████    ██████   ███████  ██████
+// ████  ████  ██   ██  ████   ██  ██   ██  ██        ██       ██   ██
+// ██ ████ ██  ███████  ██ ██  ██  ███████  ██   ███  █████    ██████
+// ██  ██  ██  ██   ██  ██  ██ ██  ██   ██  ██    ██  ██       ██   ██
+// ██      ██  ██   ██  ██   ████  ██   ██   ██████   ███████  ██   ██
+//
+// ██████   ███████  ██       ███████   ██████    █████   ████████  ███████
+// ██   ██  ██       ██       ██       ██        ██   ██     ██     ██
+// ██   ██  █████    ██       █████    ██   ███  ███████     ██     █████
+// ██   ██  ██       ██       ██       ██    ██  ██   ██     ██     ██
+// ██████   ███████  ███████  ███████   ██████   ██   ██     ██     ███████
 
 - (void)centralManagerDidUpdateState:(nonnull CBCentralManager *)central
 {
@@ -1032,7 +1036,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 
     int adapterState = [self bmAdapterStateEnum:self.centralManager.state];
 
-    // stop scanning when adapter is turned off. 
+    // stop scanning when adapter is turned off.
     // Otherwise, scanning automatically resumes when the adapter is
     // turned back on. I don't think most users expect that.
     if (self.centralManager.state != CBManagerStatePoweredOn) {
@@ -1060,7 +1064,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     Log(LVERBOSE, @"centralManager didDiscoverPeripheral");
 
     NSString* remoteId = [[peripheral identifier] UUIDString];
-    
+
     // add to known peripherals
     [self.knownPeripherals setObject:peripheral forKey:remoteId];
 
@@ -1230,7 +1234,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     NSDictionary *result = @{
         @"remote_id":                [[peripheral identifier] UUIDString],
         @"connection_state":         @([self bmConnectionStateEnum:peripheral.state]),
-        @"disconnect_reason_code":   error ? @(error.code) : [NSNull null], 
+        @"disconnect_reason_code":   error ? @(error.code) : [NSNull null],
         @"disconnect_reason_string": error ? [error localizedDescription] : [NSNull null],
     };
 
@@ -1239,17 +1243,17 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////
-//  ██████  ██████   ██████   ███████  ██████   ██  ██████   ██   ██  ███████  ██████    █████   ██      
-// ██       ██   ██  ██   ██  ██       ██   ██  ██  ██   ██  ██   ██  ██       ██   ██  ██   ██  ██      
-// ██       ██████   ██████   █████    ██████   ██  ██████   ███████  █████    ██████   ███████  ██      
-// ██       ██   ██  ██       ██       ██   ██  ██  ██       ██   ██  ██       ██   ██  ██   ██  ██      
+//  ██████  ██████   ██████   ███████  ██████   ██  ██████   ██   ██  ███████  ██████    █████   ██
+// ██       ██   ██  ██   ██  ██       ██   ██  ██  ██   ██  ██   ██  ██       ██   ██  ██   ██  ██
+// ██       ██████   ██████   █████    ██████   ██  ██████   ███████  █████    ██████   ███████  ██
+// ██       ██   ██  ██       ██       ██   ██  ██  ██       ██   ██  ██       ██   ██  ██   ██  ██
 //  ██████  ██████   ██       ███████  ██   ██  ██  ██       ██   ██  ███████  ██   ██  ██   ██  ███████
 //
-// ██████   ███████  ██       ███████   ██████    █████   ████████  ███████          
-// ██   ██  ██       ██       ██       ██        ██   ██     ██     ██               
-// ██   ██  █████    ██       █████    ██   ███  ███████     ██     █████            
-// ██   ██  ██       ██       ██       ██    ██  ██   ██     ██     ██               
-// ██████   ███████  ███████  ███████   ██████   ██   ██     ██     ███████ 
+// ██████   ███████  ██       ███████   ██████    █████   ████████  ███████
+// ██   ██  ██       ██       ██       ██        ██   ██     ██     ██
+// ██   ██  █████    ██       █████    ██   ███  ███████     ██     █████
+// ██   ██  ██       ██       ██       ██    ██  ██   ██     ██     ██
+// ██████   ███████  ███████  ███████   ██████   ██   ██     ██     ███████
 
 - (void)peripheral:(CBPeripheral *)peripheral
     didDiscoverServices:(NSError *)error
@@ -1448,19 +1452,19 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 
     ServicePair *pair = [self getServicePair:peripheral characteristic:characteristic];
 
-    // Oddly iOS does not update the CCCD descriptors when didUpdateNotificationState is called. 
+    // Oddly iOS does not update the CCCD descriptors when didUpdateNotificationState is called.
     // So instead of using characteristic.descriptors we have to manually recreate the
     // CCCD descriptor using isNotifying & characteristic.properties
     int value = 0;
     if(characteristic.isNotifying) {
-        // in iOS, if a characteristic supports both indications and notifications, 
+        // in iOS, if a characteristic supports both indications and notifications,
         // then CoreBluetooth will default to indications
         bool supportsNotify = (characteristic.properties & CBCharacteristicPropertyNotify) != 0;
         bool supportsIndicate = (characteristic.properties & CBCharacteristicPropertyIndicate) != 0;
         if (characteristic.isNotifying && supportsIndicate) {value = 2;} // '2' comes from the CCCD BLE spec
         if (characteristic.isNotifying && supportsNotify) {value = 1;} // '1' comes from the CCCD BLE spec
     }
-    
+
     // See BmDescriptorData
     NSDictionary* result = @{
         @"remote_id":              [peripheral.identifier UUIDString],
@@ -1495,7 +1499,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     ServicePair *pair = [self getServicePair:peripheral characteristic:descriptor.characteristic];
 
     NSData* data = [self descriptorToData:descriptor];
-    
+
     // See BmDescriptorData
     NSDictionary* result = @{
         @"remote_id":              [peripheral.identifier UUIDString],
@@ -1540,7 +1544,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     NSString *key = [NSString stringWithFormat:@"%@:%@:%@:%@", remoteId, serviceUuid, characteristicUuid, descriptorUuid];
     NSString *value = self.writeChrs[key] ? self.writeChrs[key] : @"";
     [self.writeDescs removeObjectForKey:key];
-    
+
     // See BmDescriptorData
     NSDictionary* result = @{
         @"remote_id":              remoteId,
@@ -1570,7 +1574,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     [self.methodChannel invokeMethod:@"OnNameChanged" arguments:result];
 }
 
-- (void)peripheral:(CBPeripheral *)peripheral 
+- (void)peripheral:(CBPeripheral *)peripheral
     didModifyServices:(NSArray<CBService *> *)invalidatedServices
 {
     Log(LDEBUG, @"didModifyServices");
@@ -1607,16 +1611,16 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     Log(LVERBOSE, @"peripheralIsReadyToSendWriteWithoutResponse");
 
     // peripheralIsReadyToSendWriteWithoutResponse is used to signal
-    // when a 'writeWithoutResponse' request has completed. 
+    // when a 'writeWithoutResponse' request has completed.
     // The dart code will wait for this signal, so that we don't
     // queue writes too fast, which iOS would then drop the packets.
-    
+
     NSDictionary *request = [self.didWriteWithoutResponse objectForKey:[[peripheral identifier] UUIDString]];
     if (request == nil) {
         Log(LERROR, @"didWriteWithoutResponse is null");
         return;
     }
-    
+
     // See BmWriteCharacteristicRequest
     NSString  *characteristicUuid   = request[@"characteristic_uuid"];
     NSString  *serviceUuid          = request[@"service_uuid"];
@@ -1652,17 +1656,17 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 }
 
 //////////////////////////////////////////////////////////////////////
-// ███    ███  ███████   ██████      
-// ████  ████  ██       ██           
-// ██ ████ ██  ███████  ██   ███     
-// ██  ██  ██       ██  ██    ██     
-// ██      ██  ███████   ██████ 
-//     
-// ██   ██  ███████  ██       ██████   ███████  ██████   ███████ 
-// ██   ██  ██       ██       ██   ██  ██       ██   ██  ██      
-// ███████  █████    ██       ██████   █████    ██████   ███████ 
-// ██   ██  ██       ██       ██       ██       ██   ██       ██ 
-// ██   ██  ███████  ███████  ██       ███████  ██   ██  ███████ 
+// ███    ███  ███████   ██████
+// ████  ████  ██       ██
+// ██ ████ ██  ███████  ██   ███
+// ██  ██  ██       ██  ██    ██
+// ██      ██  ███████   ██████
+//
+// ██   ██  ███████  ██       ██████   ███████  ██████   ███████
+// ██   ██  ██       ██       ██   ██  ██       ██   ██  ██
+// ███████  █████    ██       ██████   █████    ██████   ███████
+// ██   ██  ██       ██       ██       ██       ██   ██       ██
+// ██   ██  ███████  ███████  ██       ███████  ██   ██  ███████
 
 - (int)bmAdapterStateEnum:(CBManagerState)adapterState
 {
@@ -1693,7 +1697,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     // Manufacturer Data
     NSDictionary* manufDataB = nil;
     if (manufData != nil && manufData.length >= 2) {
-        
+
         // first 2 bytes are manufacturerId (little endian)
         uint8_t bytes[2];
         [manufData getBytes:bytes length:2];
@@ -1702,12 +1706,12 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
         // trim off first 2 bytes
         NSData* trimmed = [manufData subdataWithRange:NSMakeRange(2, manufData.length - 2)];
         NSString* hex = [self convertDataToHex:trimmed];
-        
+
         manufDataB = @{
             @(manufId): hex,
         };
     }
-    
+
     // Service Uuids - convert from CBUUID's to UUID strings
     NSArray *serviceUuidsB = nil;
     if (serviceUuids != nil) {
@@ -1717,7 +1721,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
         }
         serviceUuidsB = [mutable copy];
     }
-    
+
     // Service Data - convert from CBUUID's to UUID strings
     NSDictionary *serviceDataB = nil;
     if (serviceData != nil)
@@ -1849,11 +1853,11 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
 }
 
 //////////////////////////////////////////
-// ██    ██ ████████  ██  ██       ███████ 
-// ██    ██    ██     ██  ██       ██      
-// ██    ██    ██     ██  ██       ███████ 
-// ██    ██    ██     ██  ██            ██ 
-//  ██████     ██     ██  ███████  ███████ 
+// ██    ██ ████████  ██  ██       ███████
+// ██    ██    ██     ██  ██       ██
+// ██    ██    ██     ██  ██       ███████
+// ██    ██    ██     ██  ██            ██
+//  ██████     ██     ██  ███████  ███████
 
 - (bool)isAdapterOn
 {
@@ -1942,7 +1946,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
         // mask
         if (mask.length == 0 && data.length > 0) {
             uint8_t *bytes = malloc(data.length);
-            memset(bytes, 1, data.length); 
+            memset(bytes, 1, data.length);
             mask = [NSData dataWithBytesNoCopy:bytes length:data.length freeWhenDone:YES];
         }
 
@@ -1976,7 +1980,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
         // mask
         if (mask.length == 0 && data.length > 0) {
             uint8_t *bytes = malloc(data.length);
-            memset(bytes, 1, data.length); 
+            memset(bytes, 1, data.length);
             mask = [NSData dataWithBytesNoCopy:bytes length:data.length freeWhenDone:YES];
         }
 
@@ -1996,22 +2000,22 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     if ([find length] != [mask length]) {
         return NO;
     }
-    
+
     const uint8_t *bFind = [find bytes];
     const uint8_t *bData = [data bytes];
     const uint8_t *bMask = [mask bytes];
-    
+
     for (NSUInteger i = 0; i < [find length]; i++) {
         // Perform bitwise AND with mask and then compare
         if ((bFind[i] & bMask[i]) != (bData[i] & bMask[i])) {
             return NO;
         }
     }
-    
+
     return YES;
 }
 
-- (NSString *)convertDataToHex:(NSData *)data 
+- (NSString *)convertDataToHex:(NSData *)data
 {
     if (data == nil) {
         return @"";
@@ -2085,12 +2089,12 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     //   I've seen iOS return 524 for this value. But typically it is lower.
     //   The MTU negotiated by the OS depends on iOS version.
     //
-    // For withResponse, 
-    //   iOS typically returns a constant value of 512, regardless of MTU. 
+    // For withResponse,
+    //   iOS typically returns a constant value of 512, regardless of MTU.
     //   This is because iOS will autosplit large writes
     int maxForType = (int) [peripheral maximumWriteValueLengthForType:writeType];
 
-    // In order to operate the same on both iOS & Android, we enforce a 
+    // In order to operate the same on both iOS & Android, we enforce a
     // maximum of 512, which is the same as android. This is also the
     // maxAttrLen of a characteristic in the BLE specification.
     return MIN(maxForType, 512);
@@ -2114,7 +2118,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
         result.primary = service;
         result.secondary = NULL;
         return result;
-    } 
+    }
 
     // Otherwise, iterate all services until we find the primary service
     for (CBService *primary in [peripheral services])
@@ -2148,7 +2152,7 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
             // NSNumber
             int value = [descriptor.value intValue];
             data = [NSData dataWithBytes:&value length:sizeof(value)];
-        } 
+        }
         else if ([descriptor.value isKindOfClass:[NSData class]])
         {
             // NSData
