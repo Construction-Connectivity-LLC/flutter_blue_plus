@@ -61,6 +61,7 @@ class BmScanSettings {
   final List<String> withRemoteIds;
   final List<String> withNames;
   final List<String> withKeywords;
+  final List<int> manufacturerIds;
   final List<BmMsdFilter> withMsd;
   final List<BmServiceDataFilter> withServiceData;
   final bool continuousUpdates;
@@ -73,6 +74,7 @@ class BmScanSettings {
     required this.withRemoteIds,
     required this.withNames,
     required this.withKeywords,
+    required this.manufacturerIds,
     required this.withMsd,
     required this.withServiceData,
     required this.continuousUpdates,
@@ -93,6 +95,7 @@ class BmScanSettings {
     data['continuous_divisor'] = continuousDivisor;
     data['android_scan_mode'] = androidScanMode;
     data['android_uses_fine_location'] = androidUsesFineLocation;
+    data['manufacturer_ids'] = manufacturerIds;
     return data;
   }
 }
