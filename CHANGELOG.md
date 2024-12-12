@@ -1,3 +1,73 @@
+## 1.34.5
+* **[Feature]** add `FlutterBluePlus.logs` to get access to FBP logs
+
+## 1.34.4
+* **[Improve]** improve error message when secondary service is not found
+
+## 1.34.3
+* **[Fix]** `startScan` was not propogating errors (regression 1.31.7)
+
+## 1.34.2
+* **[Fix]** characteristic not found (regression 1.34.0)
+
+## 1.34.1
+* **[Fix]** Android: `SCAN_FAILED_ALREADY_STARTED` could sometimes occur after bluetooth restart
+
+## 1.34.0
+* **[Feature]** support `includedServices`, aka primary/secondary services
+* **[Fix]** Android: `withServiceData` scan filter was not working (regression in 1.28.3)
+
+## 1.33.6
+* **[Feature]** verbose logs: make function results easier to see
+
+## 1.33.5
+* **[Fix]** iOS: crash caused by 1-byte advertisements (#1022)
+
+## 1.33.4
+* **[Fix]** Android: null deref when getting permissions (regression 1.33.3)
+
+## 1.33.3
+* **[Fix]** Android: asking permission would not work until app restart (regression 1.32.13)
+
+## 1.33.2
+* **[Fix]** Android: compile bug in 1.33.1
+
+## 1.33.1
+* **[Fix]** Android: compile bug in 1.33.0
+
+## 1.33.0
+* **[BREAKING CHANGE]** iOS 18 compatibility: `systemDevices` now requires UUID argument
+* **[Fix]** Android: characteristic READ error was not being passed to dart
+
+## 1.32.13
+* **[Feature]** iOS: add support for State Preservation
+* **[Improve]** Android: ask for both scan permissions at the same time
+
+## 1.32.12
+* **[Fix]** Android: further improve `disconnect(queue:false)` reliability
+* **[Deprecate]** deprecate BluetoothDevice.fromProto(...)
+
+## 1.32.11
+* **[Improve]** Android: perf: speed up `bytesToHex`
+
+## 1.32.10
+* **[Fix]** Android: calling `disconnect(queue:false)` may sometimes silently fail
+
+## 1.32.9
+* **[Feature]** Android: add legacy scan option
+
+## 1.32.8
+* **[Fix]** iOS: was not updating `lastValueStream` if `withoutResponse:true`
+
+## 1.32.7
+* **[Fix]** android: last byte was cutoff for msd of same manufactuerId (regression 1.32.5)
+
+## 1.32.6
+* **[Fix]** calling `startScan` multiple times in a row would fail
+
+## 1.32.5
+* **[Fix]** android: support multiple MSD with the same manufacturer ID
+
 ## 1.32.4
 * **[Improve]** revert 1.32.3 (i.e. go back to 1.32.1 behavior)
 * **[Fix]** fix `SCAN_FAILED_ALREADY_STARTED` on android after adapter is turned `off` then `on`
@@ -931,6 +1001,11 @@ This release closes many open issues on Github.
 * **[Improve]** iOS: Use `CBCentralManagerOptionShowPowerAlertKey` for better UI popups
 * **[Improve]** Dart: Removed RxDart and other dependencies
 
+---
+
+# Chip Weinberger Becomes Maintainer
+
+---
 
 ## 1.4.0
 * Android: Add clear gatt cache method #142 (thanks to joistaus)
