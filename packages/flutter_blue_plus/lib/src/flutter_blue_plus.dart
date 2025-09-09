@@ -92,10 +92,6 @@ class FlutterBluePlus {
     }
   }
 
-  static Future<void> openBluetoothSettings() {
-    return _invokeMethod('openBluetoothSettings');
-  }
-
   /// Get access to all device event streams
   static final BluetoothEvents events = BluetoothEvents();
 

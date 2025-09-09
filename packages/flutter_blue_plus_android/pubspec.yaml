@@ -10,7 +10,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_blue_plus_platform_interface: 5.0.0
+  flutter_blue_plus_platform_interface:
+    path: ../flutter_blue_plus_platform_interface
 
 # uncomment for platform interface local development
 #dependency_overrides:

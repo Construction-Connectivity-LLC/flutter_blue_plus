@@ -532,6 +532,7 @@ final class FlutterBluePlusWeb extends FlutterBluePlusPlatform {
               manufacturerData: {},
               serviceData: {},
               serviceUuids: [],
+              rawBytes: Uint8List(0),
               rssi: 0,
             ),
           ],

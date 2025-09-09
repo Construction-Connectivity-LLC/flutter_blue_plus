@@ -184,6 +184,25 @@ class BmScanAdvertisement {
       rawBytes: rawBytes != null ? Uint8List.fromList(_hexDecode(rawBytes)) : Uint8List(0),
     );
   }
+
+  static int _hexDigit(String hex, int index)
+  {
+    final ch = hex.codeUnitAt(index);
+    if (ch >= 0x30 && ch <= 0x39) return ch - 0x30;
+    if (ch >= 0x41 && ch <= 0x46) return ch - 0x41 + 10;
+    if (ch >= 0x61 && ch <= 0x66) return ch - 0x61 + 10;
+    throw Exception('Invalid hex digit: ${hex[index]}');
+  }
+
+  static List<int> _hexDecode(String hex) {
+    if (hex.length % 2 != 0) throw Exception('Invalid hex length');
+    var bytes = <int>[];
+    for (var i = 0; i < hex.length; i += 2) {
+      bytes.add((_hexDigit(hex, i) << 4) + _hexDigit(hex, i + 1));
+    }
+    return bytes;
+  }
+
 }
 
 class BmScanResponse {

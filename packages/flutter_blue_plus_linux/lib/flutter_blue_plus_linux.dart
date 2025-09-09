@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 
 import 'package:bluez/bluez.dart';
 import 'package:flutter_blue_plus_platform_interface/flutter_blue_plus_platform_interface.dart';
@@ -225,6 +226,7 @@ final class FlutterBluePlusLinux extends FlutterBluePlusPlatform {
                   return Guid.fromBytes(uuid.value);
                 },
               ).toList(),
+              rawBytes: Uint8List(0),
               rssi: device.rssi,
             ),
           ],

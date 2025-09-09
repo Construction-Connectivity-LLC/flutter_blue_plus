@@ -45,10 +45,10 @@ packages:
     dependency: transitive
     description:
       name: ffi
-      sha256: "289279317b4b16eb2bb7e271abccd4bf84ec9bdcbe999e278a94b804f5630418"
+      sha256: "16ed7b077ef01ad6170a3d0c57caa4a112a38d7a2ed5602e0aca9ca6f3d98da6"
       url: "https://pub.dev"
     source: hosted
-    version: "2.1.4"
+    version: "2.1.3"
   flutter:
     dependency: "direct main"
     description: flutter
@@ -60,42 +60,42 @@ packages:
       path: ".."
       relative: true
     source: path
-    version: "1.35.5"
+    version: "1.35.10"
   flutter_blue_plus_android:
     dependency: "direct overridden"
     description:
       path: "../../flutter_blue_plus_android"
       relative: true
     source: path
-    version: "4.0.5"
+    version: "5.0.3"
   flutter_blue_plus_darwin:
     dependency: "direct overridden"
     description:
       path: "../../flutter_blue_plus_darwin"
       relative: true
     source: path
-    version: "4.0.1"
+    version: "5.0.1"
   flutter_blue_plus_linux:
     dependency: "direct overridden"
     description:
       path: "../../flutter_blue_plus_linux"
       relative: true
     source: path
-    version: "3.0.2"
+    version: "5.0.0"
   flutter_blue_plus_platform_interface:
     dependency: "direct overridden"
     description:
       path: "../../flutter_blue_plus_platform_interface"
       relative: true
     source: path
-    version: "4.0.2"
+    version: "5.0.0"
   flutter_blue_plus_web:
     dependency: "direct overridden"
     description:
       path: "../../flutter_blue_plus_web"
       relative: true
     source: path
-    version: "3.0.1"
+    version: "5.0.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -113,10 +113,10 @@ packages:
     dependency: transitive
     description:
       name: lints
-      sha256: c35bb79562d980e9a453fc715854e1ed39e24e7d0297a880ef54e17f9874a9d7
+      sha256: "3315600f3fb3b135be672bf4a178c55f274bebe368325ae18462c89ac1e3b413"
       url: "https://pub.dev"
     source: hosted
-    version: "5.1.1"
+    version: "5.0.0"
   material_color_utilities:
     dependency: transitive
     description:
@@ -137,10 +137,10 @@ packages:
     dependency: transitive
     description:
       name: petitparser
-      sha256: "07c8f0b1913bcde1ff0d26e57ace2f3012ccbf2b204e070290dad3bb22797646"
+      sha256: c15605cd28af66339f8eb6fbe0e541bfe2d1b72d5825efc6598f3e0a31b9ad27
       url: "https://pub.dev"
     source: hosted
-    version: "6.1.0"
+    version: "6.0.2"
   rxdart:
     dependency: transitive
     description:
@@ -179,5 +179,5 @@ packages:
     source: hosted
     version: "6.5.0"
 sdks:
-  dart: ">=3.7.0 <4.0.0"
+  dart: ">=3.7.0-0 <4.0.0"
   flutter: ">=3.7.0"
