@@ -8,6 +8,7 @@
 .buildlog/
 .history
 .svn/
+migrate_working_dir/
 
 # IntelliJ related
 *.iml
@@ -23,12 +24,8 @@
 # Flutter/Dart/Pub related
 # Libraries should not include pubspec.lock, per https://dart.dev/guides/libraries/private-files#pubspeclock.
 /pubspec.lock
-/example/pubspec.lock
-/example/ios/Podfile.lock
 **/doc/api/
 .dart_tool/
-.packages
+.flutter-plugins
+.flutter-plugins-dependencies
 build/
-.pub/
-
-/packages/flutter_blue_plus/example/android/app/.cxx/
