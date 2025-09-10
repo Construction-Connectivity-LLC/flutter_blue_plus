@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show defaultTargetPlatform, TargetPlatform;
 import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 import 'device_screen.dart';
@@ -175,7 +176,29 @@ class _ScanScreenState extends State<ScanScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: const Text('Find Devices'),
-          actions: [buildScanButton(), const SizedBox(width: 15)],
+          actions: [
+            IconButton(
+              tooltip: 'Open Bluetooth Settings',
+              icon: const Icon(Icons.settings_bluetooth),
+              onPressed: () async {
+                try {
+                  await FlutterBluePlus.openBluetoothSettings();
+                  if (mounted) {
+                    final isCupertino = defaultTargetPlatform == TargetPlatform.iOS || defaultTargetPlatform == TargetPlatform.macOS;
+                    final msg = isCupertino
+                        ? 'If Bluetooth is OFF, iOS/macOS will show a system alert to enable it. If it is already ON, nothing will appear (expected).'
+                        : 'Bluetooth settings opened';
+                    Snackbar.show(ABC.b, msg, success: true);
+                  }
+                } catch (e) {
+                  Snackbar.show(ABC.b, prettyException('Open Settings Error:', e), success: false);
+                }
+              },
+            ),
+            const SizedBox(width: 8),
+            buildScanButton(),
+            const SizedBox(width: 15)
+          ],
         ),
         body: RefreshIndicator(
           onRefresh: onRefresh,

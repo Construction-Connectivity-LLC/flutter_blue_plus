@@ -970,6 +970,10 @@ class BmTurnOnRequest {
   BmTurnOnRequest();
 }
 
+class BmOpenBluetoothSettingsRequest {
+  BmOpenBluetoothSettingsRequest();
+}
+
 class BmTurnOnResponse {
   bool userAccepted;
 

@@ -375,6 +375,15 @@ final class FlutterBluePlusAndroid extends FlutterBluePlusPlatform {
   }
 
   @override
+  Future<void> openBluetoothSettings(
+    BmOpenBluetoothSettingsRequest request,
+  ) async {
+    await _invokeMethod(
+      'openBluetoothSettings',
+    );
+  }
+
+  @override
   Future<bool> writeCharacteristic(
     BmWriteCharacteristicRequest request,
   ) async {

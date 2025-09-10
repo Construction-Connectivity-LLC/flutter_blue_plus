@@ -34,9 +34,11 @@ class BluetoothOffScreen extends StatelessWidget {
         child: const Text('TURN ON'),
         onPressed: () async {
           try {
-            if (!kIsWeb && Platform.isAndroid) {
-              await FlutterBluePlus.turnOn();
-            }
+            // if (!kIsWeb && Platform.isAndroid) {
+            //   await FlutterBluePlus.turnOn();
+            // } else {
+              FlutterBluePlus.openBluetoothSettings();
+            // }
           } catch (e, backtrace) {
             Snackbar.show(ABC.a, prettyException("Error Turning On:", e), success: false);
             print("$e");
@@ -59,7 +61,7 @@ class BluetoothOffScreen extends StatelessWidget {
             children: <Widget>[
               buildBluetoothOffIcon(context),
               buildTitle(context),
-              if (!kIsWeb && Platform.isAndroid) buildTurnOnButton(context),
+              if (!kIsWeb) buildTurnOnButton(context),
             ],
           ),
         ),

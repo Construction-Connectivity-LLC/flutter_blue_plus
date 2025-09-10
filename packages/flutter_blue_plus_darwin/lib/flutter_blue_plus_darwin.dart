@@ -265,6 +265,15 @@ final class FlutterBluePlusDarwin extends FlutterBluePlusPlatform {
     ) == true;
   }
 
+  @override
+  Future<void> openBluetoothSettings(
+    BmOpenBluetoothSettingsRequest request,
+  ) async {
+    await _invokeMethod(
+      'openBluetoothSettings',
+    );
+  }
+
   Future<T?> _invokeMethod<T>(
     String method, [
     dynamic arguments,

@@ -283,6 +283,12 @@ abstract base class FlutterBluePlusPlatform {
     return Future.value(false);
   }
 
+  Future<void> openBluetoothSettings(
+    BmOpenBluetoothSettingsRequest request,
+  ) {
+    return Future.value();
+  }
+
   Future<bool> writeCharacteristic(
     BmWriteCharacteristicRequest request,
   ) {

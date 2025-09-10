@@ -114,6 +114,15 @@ class FlutterBluePlus {
         .setOptions(BmSetOptionsRequest(showPowerAlert: showPowerAlert, restoreState: restoreState)));
   }
 
+  /// Open Bluetooth settings UI
+  /// - Android: opens the Bluetooth Settings screen
+  /// - iOS/macOS: shows the power alert via CBCentralManager option
+  /// - Other platforms: no-op
+  static Future<void> openBluetoothSettings() async {
+    await _invokeMethod(() => FlutterBluePlusPlatform.instance
+        .openBluetoothSettings(BmOpenBluetoothSettingsRequest()));
+  }
+
   /// Turn on Bluetooth (Android only),
   static Future<void> turnOn({int timeout = 60}) async {
     var responseStream = FlutterBluePlusPlatform.instance.onTurnOnResponse;
