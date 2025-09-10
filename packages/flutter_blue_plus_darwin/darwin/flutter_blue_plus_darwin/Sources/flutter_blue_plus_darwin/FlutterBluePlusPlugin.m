@@ -1902,6 +1902,49 @@ typedef NS_ENUM(NSUInteger, LogLevel) {
     if (serviceUuidsB)         {map[@"service_uuids"] = serviceUuidsB;}
     if (serviceDataB)          {map[@"service_data"] = serviceDataB;}
     if (RSSI)                  {map[@"rssi"] = RSSI;}
+
+    // Build best-effort raw advertisement bytes (TLV format) similar to Android's ScanRecord.getBytes()
+    // Note: iOS does not expose the complete raw scan record. We reconstruct common fields.
+    NSMutableData *raw = [NSMutableData data];
+
+    // Manufacturer Specific Data (Type 0xFF)
+    if (manufData != nil && manufData.length > 0) {
+        uint8_t type = 0xFF;
+        uint8_t len = (uint8_t)(manufData.length + 1); // length excludes the length byte itself, includes type
+        [raw appendBytes:&len length:1];
+        [raw appendBytes:&type length:1];
+        [raw appendData:manufData];
+    }
+
+    // Local Name (Complete) (Type 0x09). Use UTF-8 encoding.
+    if (advName != nil && advName.length > 0) {
+        NSData *nameData = [advName dataUsingEncoding:NSUTF8StringEncoding];
+        if (nameData != nil && nameData.length > 0) {
+            // if name is too long for a single AD structure, truncate to 0xFF-2 bytes to stay within one TLV
+            NSUInteger maxLen = 0xFF - 1; // max payload for value when using 1-byte length
+            NSData *truncated = nameData.length > maxLen ? [nameData subdataWithRange:NSMakeRange(0, maxLen)] : nameData;
+            uint8_t type = 0x09; // Complete Local Name
+            uint8_t len = (uint8_t)(truncated.length + 1);
+            [raw appendBytes:&len length:1];
+            [raw appendBytes:&type length:1];
+            [raw appendData:truncated];
+        }
+    }
+
+    // Tx Power Level (Type 0x0A)
+    if (txPower != nil) {
+        int8_t pwr = (int8_t)[txPower charValue];
+        uint8_t type = 0x0A;
+        uint8_t len = 1 + 1; // type + 1 byte value
+        [raw appendBytes:&len length:1];
+        [raw appendBytes:&type length:1];
+        [raw appendBytes:&pwr length:1];
+    }
+
+    if (raw.length > 0) {
+        map[@"raw_bytes"] = [self convertDataToHex:raw];
+    }
+
     return map;
 }
 

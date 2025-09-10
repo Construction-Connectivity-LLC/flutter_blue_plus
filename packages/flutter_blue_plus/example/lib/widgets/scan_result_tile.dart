@@ -120,6 +120,7 @@ class _ScanResultTileState extends State<ScanResultTile> {
         if (adv.msd.isNotEmpty) _buildAdvRow(context, 'Manufacturer Data', getNiceManufacturerData(adv.msd)),
         if (adv.serviceUuids.isNotEmpty) _buildAdvRow(context, 'Service UUIDs', getNiceServiceUuids(adv.serviceUuids)),
         if (adv.serviceData.isNotEmpty) _buildAdvRow(context, 'Service Data', getNiceServiceData(adv.serviceData)),
+        if (adv.rawBytes.isNotEmpty) _buildAdvRow(context, 'Raw bytes', getNiceHexArray(adv.rawBytes)),
       ],
     );
   }
